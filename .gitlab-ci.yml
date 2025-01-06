@@ -1,0 +1,58 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  # Docker Hub repository details
+  FRONTEND_IMAGE: bhuvaneshraj/grademaster-frontend
+  BACKEND_IMAGE: bhuvaneshraj/grademaster-backend
+  DOCKER_TAG: latest
+
+# Build the frontend Docker image
+build-frontend:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  before_script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  script:
+    - echo "Building the frontend Docker image..."
+    - docker build -t $FRONTEND_IMAGE:$DOCKER_TAG ./frontend
+    - echo "Pushing the frontend Docker image to Docker Hub..."
+    - docker push $FRONTEND_IMAGE:$DOCKER_TAG
+  only:
+    - main
+
+# Build the backend Docker image
+build-backend:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  before_script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  script:
+    - echo "Building the backend Docker image..."
+    - docker build -t $BACKEND_IMAGE:$DOCKER_TAG ./backend
+    - echo "Pushing the backend Docker image to Docker Hub..."
+    - docker push $BACKEND_IMAGE:$DOCKER_TAG
+  only:
+    - main
+
+# Deploy the services using docker-compose
+deploy:
+  stage: deploy
+  image: docker/compose:latest
+  services:
+    - docker:24-dind
+  before_script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  script:
+    - echo "Pulling the latest Docker images..."
+    - docker pull $FRONTEND_IMAGE:$DOCKER_TAG
+    - docker pull $BACKEND_IMAGE:$DOCKER_TAG
+    - echo "Deploying the application using docker-compose..."
+    - docker-compose up -d
+  only:
+    - main

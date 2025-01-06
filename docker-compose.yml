@@ -2,25 +2,13 @@ version: '3.8'
 
 services:
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: bhuvaneshraj/grademaster-frontend:latest
     ports:
       - "3000:3000"
-    networks:
-      - app-network
+    depends_on:
+      - backend
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: bhuvaneshraj/grademaster-backend:latest
     ports:
       - "3500:3500"
-    networks:
-      - app-network
-    environment:
-      - NODE_ENV=production
-
-networks:
-  app-network:
-    driver: bridge
