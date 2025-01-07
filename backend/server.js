@@ -16,10 +16,12 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
 });
+
 const corsOptions = {
-    origin:["http://localhost:3001","http://localhost:3000"],
+    origin:["http://172.20.10.4:3000","http://192.168.227.1:3000","http://localhost:3000"],
     // origin: ['celadon-cendol-c0aba0.netlify.app','localhost:3000'],
-    credentials: true, // This allows the server to accept cookies from the client
+    credentials: true
+    // optionsSuccessStatus:true // This allows the server to accept cookies from the client
 };
 
 
