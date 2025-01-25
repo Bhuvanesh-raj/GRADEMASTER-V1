@@ -51,16 +51,22 @@ Login.post(async (req,res)=>{
             // await Users.updateOne({username:username,password:md5(password)},{$set:{refreshtoken:refreshtoken}});
             // console.log(refreshtoken);
             // res.cookie('jwt',refreshtoken,{httpOnly:true,maxAge:24*60*60*1000});
+            console.log("USER FOUND");
             res.json({accesstoken,dob,registernumber,year,collegename,roles}).status(200);
         }
         else{
             // res.json({message:"Unauthorised"});
-            res.send("No user found").sendStatus(401);
+            console.log("NO USER FOUND");
+            res.sendStatus(401);
+            console.log("NO USER FOUND");
+            
         }
     }   
     catch(e){
         console.log("TRY AGAIN");
+        console.log(e);
         res.json({message:"TRY AGAIN"}).sendStatus(500);
+        console.log("TRY AGAIN");
     }
 }).get((req,res)=>res.send("welcome to the get page!!"));
 
